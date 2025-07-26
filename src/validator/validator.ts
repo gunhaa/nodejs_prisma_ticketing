@@ -1,0 +1,15 @@
+import { z } from "Zod";
+
+const createEventSchema = z.object({
+  eventTitle: z.string().min(1, "이벤트 이름은 필수입니다."),
+  maxSeats: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(100)
+    .transform((val) => (val > 500 ? 500 : val)),
+});
+
+type CreateEventDto = z.infer<typeof createEventSchema>;
+
+export { createEventSchema, CreateEventDto };

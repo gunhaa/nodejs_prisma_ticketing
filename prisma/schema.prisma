@@ -48,7 +48,7 @@ enum SeatStatus {
 
 model Event {
   id          Int  @default(autoincrement())  @id  @map("event_id")
-  eventTitle  String  @map("event_title")
+  eventTitle  String  @map("event_title")  @unique
   seats       Seat[]
   maxSeat     Int @default(100)  @map("max_seat")
   createdAt   DateTime  @default(now())  @map("created_at")
