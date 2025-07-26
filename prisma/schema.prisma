@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules/.prisma/client"}
+  output = "../node_modules/.prisma/client"
+}
 
 datasource db {
   provider = "mysql"
@@ -10,17 +11,68 @@ datasource db {
 model Member {
   id         Int  @default(autoincrement())  @id  @map("member_id")
   email      String
+  dibs       Dibs[]
   createdAt  DateTime  @default(now()) @map("created_at")
 }
 
-model Event {
+model Dibs {
+  id          Int  @default(autoincrement())  @id  @map("dibs_id")
+  isDeleted   Boolean @default(false)
+  memberId  Int      @map("member_id")
+  member    Member   @relation(fields: [memberId], references: [id]) // 관계 주인
+  seatId    Int      @map("seat_id")
+  seat      Seat     @relation(fields: [seatId], references: [id]) // 관계 주인
+  createdAt   DateTime  @default(now())  @map("created_at")
+  updatedAt   DateTime  @updatedAt
+}
 
+model Seat {
+  id          Int  @default(autoincrement())  @id  @map("seat_id")
+  seatNumber      Int  @unique  @map("seat_number")
+  seatStatus  SeatStatus  @map("seat_status")
+  dibs        Dibs[]
+  eventId     Int    @map("event_id")
+  event       Event  @relation(fields: [eventId], references: [id]) // 관계 주인
+  ticketId  Int?     @map("ticket_id")  @unique
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id]) // 관계 주인
+  createdAt  DateTime  @default(now())  @map("created_at")
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([eventId, seatNumber])
+}
+
+enum SeatStatus {
+  AVAILABLE
+  BLOCKED
+}
+
+model Event {
+  id          Int  @default(autoincrement())  @id  @map("event_id")
+  eventTitle  String  @map("event_title")
+  seats       Seat[]
+  maxSeat     Int @default(100)  @map("max_seat")
+  createdAt   DateTime  @default(now())  @map("created_at")
 }
 
 model Ticket {
-
-}
+  id          Int  @default(autoincrement())  @id  @map("ticket_id")
+  seat        Seat?     @relation
+  payment     Payment?    @relation
+  ticketStatus  TicketStatus  @map("ticket_status")
+  createdAt   DateTime  @default(now())  @map("created_at")
+  updatedAt   DateTime  @updatedAt
+} 
 
 enum TicketStatus {
+  PENDING
+  DIBS
+  CONFIRMED
+}
 
+model Payment {
+  id          Int  @default(autoincrement())  @id  @map("payment_id")
+  ticketId    Int  @map("ticket_id")  @unique
+  ticket      Ticket    @relation(fields: [ticketId], references: [id]) // 관계 주인
+  createdAt   DateTime  @default(now())  @map("created_at")
+  updatedAt   DateTime  @updatedAt
 }

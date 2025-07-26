@@ -19,8 +19,6 @@
 
 ## DB Schema
 
-- 티켓을 결제까지 내린다 = 찜
-
 - Member(회원)
   - id
   - email
@@ -49,12 +47,13 @@
   - Member(1:N)
   - Seat(1:1)
   - Payment(N:1)
+  - ticketStatus
   - cost
   - createdAt
   - updatedAt 
 - Payment(결제)
   - id
-  - isPayed
+  - ~~isPayed~~
   - Ticket(1:N)
   - Member(1:N)
   - createdAt
@@ -67,6 +66,16 @@
 - [POST] /event/:eventId/seats/:seatNo/dibs : 찜하기(body에 member 정보, event, seatNo)
 - [POST] /payment : 결제(요청 body에는 ticketIds만 넘기도록)
 
+## 특이사항
+
+- 한 회원은 여러가지를 찜 할 수있다
+- 한번에 한개의 티켓만이 결제 가능하다
+
+
 ## 동시성 제어
+
+1. 첫 단계에서는 DB에서 동시성 제어를 하지않고, 코드에서도 신경쓰지 않음
+2. 두 번째 단계에서 DB 수준의 동시성 제어
+3. 코드 수준의 동시성 제어
 
 ## 테스트
