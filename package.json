@@ -2,10 +2,10 @@
   "name": "express_prisma_ticketing",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist server.js",
   "scripts": {
     "build": "npx tsc",
-    "start": "node index.js",
+    "start": "node dist/src/server.js",
     "test": "jest"
   },
   "repository": {
@@ -15,7 +15,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/gunhaa/nodejs_prisma_ticketing/issues"
   },
