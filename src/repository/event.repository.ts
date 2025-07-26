@@ -11,7 +11,7 @@ class EventRepository {
 
   async registerEvent(validateEvent: CreateEventDto) {
 
-    await prisma.event.findUnique
+    // 미리 event title 찾은 후, 중복이라면 생성 불가 시켜야함 혹은 DB 수준에서 차단
 
     const event = await prisma.event.create({
       data: {

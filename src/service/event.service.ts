@@ -15,7 +15,6 @@ class EventService {
 
   async registerEvent(req: Request): Promise<Event>{
 
-    console.log(`req.body: ` , req.body);
     const validateEvent: CreateEventDto = createEventSchema.parse(req.body);
 
     return this.eventRepository.registerEvent(validateEvent);
