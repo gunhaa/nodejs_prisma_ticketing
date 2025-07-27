@@ -8,17 +8,22 @@ import {
   createEventSchema,
   ValidateEventId,
   validateEventIdSchema,
+  ValidateRegisterDibsSchema,
+  validateRegisterDibsSchema,
 } from "../validator/validator";
-import { Event, Seat } from "@prisma/client";
+import { Dibs, Event, Seat } from "@prisma/client";
 import { seatRepository, SeatRepository } from "../repository/seat.repository";
+import { memberRepository, MemberRepository } from "../repository/member.repository";
 
 class EventService {
   private readonly eventRepository;
   private readonly seatRepository;
+  private readonly memberRepository;
 
-  constructor(eventRepository: EventRepository, seatRepository: SeatRepository) {
+  constructor(eventRepository: EventRepository, seatRepository: SeatRepository, memberRepository: MemberRepository) {
     this.eventRepository = eventRepository;
     this.seatRepository = seatRepository;
+    this.memberRepository = memberRepository;
   }
 
   async registerEvent(req: Request): Promise<Event> {
@@ -41,6 +46,28 @@ class EventService {
 
     return findSeats;
   }
+
+  async registerDibs(req: Request): Promise<Dibs> {
+
+    // member 없으면 만들어 db저장
+    // body로 email을 입력받아야함
+    const parsedRequest = this.parseRequest(req);
+    const validatedRequest = validateRegisterDibsSchema.parse(parsedRequest);
+
+    const findMember = await this.memberRepository.findOrCreateMember(validatedRequest);
+
+    // seat 존재 여부 조회
+
+    // dibs 생성
+  }
+
+  private parseRequest(req: Request): unknown {
+    return {
+      eventId: req.params.eventId,
+      seatNo: req.params.seatNo,
+      memberEmail: req.body.memberEmail,
+    }
+  }
 }
 
-export default new EventService(eventRepository, seatRepository);
+export default new EventService(eventRepository, seatRepository, memberRepository);

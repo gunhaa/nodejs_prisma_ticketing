@@ -13,12 +13,24 @@ const createEventSchema = z.object({
 type CreateEventDto = z.infer<typeof createEventSchema>;
 
 const validateEventIdSchema = z.object({
-  eventId: z.coerce
-    .number()
-    .int()
-    .positive()
+  eventId: z.coerce.number().int().positive(),
 });
 
-type ValidateEventId = z.infer<typeof validateEventIdSchema>
+type ValidateEventId = z.infer<typeof validateEventIdSchema>;
 
-export { createEventSchema, CreateEventDto, validateEventIdSchema, ValidateEventId };
+const validateRegisterDibsSchema = z.object({
+  eventId: z.coerce.number().int().positive(),
+  seatNo: z.coerce.number().int().positive(),
+  memberEmail: z.email(),
+});
+
+type ValidateRegisterDibsSchema = z.infer<typeof validateRegisterDibsSchema>;
+
+export {
+  createEventSchema,
+  CreateEventDto,
+  validateEventIdSchema,
+  ValidateEventId,
+  validateRegisterDibsSchema,
+  ValidateRegisterDibsSchema,
+};

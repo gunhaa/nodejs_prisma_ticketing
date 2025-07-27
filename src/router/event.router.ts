@@ -5,21 +5,21 @@ const eventRouter = Router();
 
 eventRouter.post("/", async (req: Request, res: Response) => {
   // service layer registerEvent 호출
-  const event = await eventService.registerEvent(req);
+  const createdEvent = await eventService.registerEvent(req);
   // eventId 같은 주요 정보는 노출 재고, DTO로 변환 후 반환 고려
-  res.status(201).json({
+  return res.status(201).json({
     message: "event 생성에 성공했습니다",
-    event: event,
+    event: createdEvent,
   });
 });
 
 eventRouter.get("/:eventId/seats", async (req: Request, res: Response) => {
   try {
-    const seats = await eventService.getSeatsByEventId(req);
+    const findSeats = await eventService.getSeatsByEventId(req);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "좌석 검색에 성공했습니다",
-      seats: seats,
+      seats: findSeats,
     });
   } catch (err) {
     if (err instanceof Error && err.message === "NOT_FOUND_EVENT") {
@@ -29,10 +29,12 @@ eventRouter.get("/:eventId/seats", async (req: Request, res: Response) => {
   }
 });
 
+// 찜하기
+// body에 member email 필수
 eventRouter.post(
   "/:eventId/seats/:seatNo/dibs",
-  (req: Request, res: Response) => {
-    res.status(200).json({ status: "찜하기" });
+  async (req: Request, res: Response) => {
+    const createdDibs = await eventService.registerDibs(req);
   }
 );
 

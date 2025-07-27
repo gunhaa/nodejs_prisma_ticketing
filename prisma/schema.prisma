@@ -10,7 +10,7 @@ datasource db {
 
 model Member {
   id         Int  @default(autoincrement())  @id  @map("member_id")
-  email      String
+  email      String  @unique
   dibs       Dibs[]
   createdAt  DateTime  @default(now()) @map("created_at")
 }
