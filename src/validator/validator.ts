@@ -12,4 +12,13 @@ const createEventSchema = z.object({
 
 type CreateEventDto = z.infer<typeof createEventSchema>;
 
-export { createEventSchema, CreateEventDto };
+const validateEventIdSchema = z.object({
+  eventId: z.coerce
+    .number()
+    .int()
+    .positive()
+});
+
+type ValidateEventId = z.infer<typeof validateEventIdSchema>
+
+export { createEventSchema, CreateEventDto, validateEventIdSchema, ValidateEventId };

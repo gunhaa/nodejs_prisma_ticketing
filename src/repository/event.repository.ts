@@ -1,6 +1,6 @@
 import { PrismaClient, Prisma } from "@prisma/client";
 import prisma from "../../prisma/prismaClient";
-import { CreateEventDto } from "../validator/validator";
+import { CreateEventDto, ValidateEventId } from "../validator/validator";
 
 class EventRepository {
   private prisma: PrismaClient;
@@ -10,30 +10,40 @@ class EventRepository {
   }
 
   async registerEvent(validateEvent: CreateEventDto) {
-
     // 미리 event title 찾은 후, 중복이라면 생성 불가 시켜야함 혹은 DB 수준에서 차단
 
-    const event = await prisma.event.create({
+    const event = await this.prisma.event.create({
       data: {
         eventTitle: validateEvent.eventTitle,
         maxSeat: validateEvent.maxSeats,
         createdAt: new Date(),
-      }
+      },
     });
 
-    const seatsData: Prisma.SeatCreateManyInput[] = Array.from({ length: validateEvent.maxSeats }, (_, i) => ({
-      seatNumber: i + 1,
-      seatStatus: "AVAILABLE",
-      eventId: event.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
+    const seatsData: Prisma.SeatCreateManyInput[] = Array.from(
+      { length: validateEvent.maxSeats },
+      (_, i) => ({
+        seatNumber: i + 1,
+        seatStatus: "AVAILABLE",
+        eventId: event.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    );
 
     await prisma.seat.createMany({
       data: seatsData,
     });
 
     return event;
+  }
+
+  async findByEventId(validatedEventId: ValidateEventId) {
+    return await this.prisma.event.findUnique({
+      where: {
+        id: validatedEventId.eventId,
+      },
+    });
   }
 }
 

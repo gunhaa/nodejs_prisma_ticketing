@@ -30,7 +30,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     if (err.code === 'P2002') {
       return res.status(409).json({ // 409 Conflict
         message: '이미 존재하는 값입니다.',
-        // 어떤 필드가 중복되었는지 알려줄 수 있습니다.
         field: err.meta?.target, 
       });
     }
@@ -49,8 +48,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     .json({ message: err.message || "알 수 없는 오류가 발생했습니다." });
 });
 
-app.all("/", (req: Request, res: Response) => {
-  res.send("use /event, /payment router");
-});
+// app.all("*", (req: Request, res: Response) => {
+//   res.status(404).send("use /event, /payment router");
+// });
 
 export default app;
